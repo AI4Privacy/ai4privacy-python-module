@@ -1,0 +1,38 @@
+Metadata-Version: 2.4
+Name: ai4privacy
+Version: 0.1.3
+Summary: A package to mask PII in text using transformers
+Home-page: https://github.com/MikeDoes/ai4privacy
+Author: Michael Anthony
+Author-email: developers@ai4privacy.com
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch>=1.10.0
+Requires-Dist: transformers>=4.0.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# ai4privacy
+A Python package to mask PII in text using advanced transformer models.
+
+## Install
+pip install ai4privacy
+
+## Usage
+```python
+from ai4privacy import mask
+text = "Email me at developers@ai4privacy.com"
+print(mask(text))  
+```
+Developed by Michael Anthony. All rights reserved.

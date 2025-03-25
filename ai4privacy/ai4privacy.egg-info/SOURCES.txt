@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+ai4privacy/__init__.py
+ai4privacy/mask.py
+ai4privacy.egg-info/PKG-INFO
+ai4privacy.egg-info/SOURCES.txt
+ai4privacy.egg-info/dependency_links.txt
+ai4privacy.egg-info/requires.txt
+ai4privacy.egg-info/top_level.txt
