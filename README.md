@@ -8,6 +8,7 @@ pip install ai4privacy
 ```python
 from ai4privacy import mask
 text = "Email me at developers@ai4privacy.com"
-print(mask(text))  
+print(mask(text))
+# returns "Email me at [PII_1]"
 ```
-Developed by Michael Anthony. All rights reserved.
+
