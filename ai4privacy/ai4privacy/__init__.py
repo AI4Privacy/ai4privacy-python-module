@@ -1,17 +1,14 @@
 """
-AI4Privacy – human‑centered privacy masking library.
-
-Exposes high‑level functions for Observe and Protect modes.
-Enable mode will be added in a future release.
+AI4Privacy – human-centered privacy masking library.
 """
 
-from .observe.observe import report_statistics
-from .protect.protect import mask, batch
+from .observe.observe import observe
+from .protect.protect import protect, batch_protect
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
-    "report_statistics",
-    "mask",
-    "batch",
+    "observe",
+    "protect",
+    "batch_protect",
 ]

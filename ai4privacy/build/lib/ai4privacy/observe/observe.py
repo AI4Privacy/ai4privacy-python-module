@@ -5,7 +5,7 @@ Implements the **Observe** mode: non-intrusive analytics about PII.
 from collections import Counter
 from ..core.semantic_layer import analyze as analyze_for_pii
 
-def observe(texts, score_threshold=0.001, batch_size=32, multilingual=False, classify_pii=False):
+def observe(texts, score_threshold=0.01, batch_size=32, multilingual=False, classify_pii=False):
     """
     Analyzes text(s) and returns statistics about detected PII entities.
 

@@ -67,7 +67,7 @@ def protect(text, verbose=False, score_threshold=0.5, multilingual=False, classi
         return {"original_text": text, "masked_text": masked, "replacements": repl}
     return masked
 
-def batch_protect(texts, verbose=False, score_threshold=0.001, batch_size=32, multilingual=False, classify_pii=False):
+def batch_protect(texts, verbose=False, score_threshold=0.01, batch_size=32, multilingual=False, classify_pii=False):
     """Finds and masks PII in a list of texts."""
     all_spans = analyze_for_pii(
         texts,
