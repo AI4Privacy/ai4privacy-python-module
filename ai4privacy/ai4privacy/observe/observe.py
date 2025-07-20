@@ -5,45 +5,23 @@ Implements the **Observe** mode: non-intrusive analytics about PII.
 from collections import Counter
 from ..core.semantic_layer import analyze as analyze_for_pii
 
-def observe(texts, score_threshold=0.001, batch_size=32, multilingual=False, classify_pii=False):
+def observe(texts, score_threshold=0.01, batch_size=32, multilingual=False, classify_pii=False, developer_verbose=False):
     """
-    Analyzes text(s) and returns statistics about detected PII entities.
-
-    Parameters
-    ----------
-    texts : str or List[str]
-        A single text string or a list of texts to analyze.
-    score_threshold : float, default 0.5
-        Confidence threshold for entity acceptance.
-    batch_size : int, default 32
-        The batch size for model inference if a list is provided.
-    multilingual : bool, default False
-        Set to True to use the multilingual anonymiser model.
-    classify_pii : bool, default False
-        Set to True to use the multilingual categorical model.
-        This overrides the `multilingual` flag.
-
-    Returns
-    -------
-    dict
-        A dictionary containing statistics about the found PII.
+    Analyzes text(s) and returns statistics and the detected PII entities.
     """
     is_single_string = isinstance(texts, str)
     if is_single_string:
         texts = [texts]
 
-    all_spans = analyze_for_pii(
-        texts,
-        score_threshold=score_threshold,
-        batch_size=batch_size,
-        multilingual=multilingual,
-        classify_pii=classify_pii
+    all_analysis_results = analyze_for_pii(
+        texts, score_threshold, batch_size, multilingual, classify_pii, developer_verbose
     )
     
     label_counts = Counter()
     texts_with_pii = 0
     
-    for spans in all_spans:
+    for result in all_analysis_results:
+        spans = result['spans']
         if spans:
             texts_with_pii += 1
         for span in spans:
@@ -51,9 +29,19 @@ def observe(texts, score_threshold=0.001, batch_size=32, multilingual=False, cla
     
     total_entities = sum(label_counts.values())
 
-    return {
+    return_dict = {
         "num_texts_processed": len(texts),
         "num_texts_with_pii": texts_with_pii,
         "pii_entity_counts": dict(label_counts),
         "total_pii_entities_found": total_entities,
     }
+
+    # Add the privacy mask (the list of found PII entities) to the output
+    privacy_masks = [res['spans'] for res in all_analysis_results]
+    return_dict['privacy_mask'] = privacy_masks[0] if is_single_string else privacy_masks
+
+    if developer_verbose:
+        dev_details = [res.get('developer_details', []) for res in all_analysis_results]
+        return_dict['developer_details'] = dev_details[0] if is_single_string else dev_details
+        
+    return return_dict
