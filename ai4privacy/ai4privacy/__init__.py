@@ -11,4 +11,6 @@ __all__ = [
     "observe",
     "protect",
     "batch_protect",
+    "mask",
+    "batch",
 ]

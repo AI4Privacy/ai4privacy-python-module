@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: ai4privacy
-Version: 0.1.3
+Version: 0.3.3
 Summary: A package to mask PII in text using transformers
 Home-page: https://github.com/MikeDoes/ai4privacy
 Author: Michael Anthony
@@ -23,16 +23,150 @@ Dynamic: requires-dist
 Dynamic: requires-python
 Dynamic: summary
 
-# ai4privacy
-A Python package to mask PII in text using advanced transformer models.
+# ai4privacy python module 🛡️
+A Python package for state-of-the-art PII detection and masking using advanced transformer models.
 
-## Install
+---
+
+## Features
+- **Protect Mode:** Anonymize text by replacing detected PII with placeholders.
+- **Observe Mode:** Get statistics and a detailed "privacy mask" of found PII without altering the original text.
+- **Multiple Models:** Built-in support for:
+    - English-specific detection.
+    - Multilingual detection.
+    - Categorical detection (e.g., `GIVENNAME`, `EMAIL`, `CITY`).
+- **Tunable Sensitivity:** An adjustable `score_threshold` to balance detection accuracy with false positives.
+- **Verbose & Developer Modes:** Rich outputs for detailed analysis and debugging.
+
+---
+
+## Installation
+```bash
 pip install ai4privacy
+````
 
-## Usage
+-----
+
+## Quick Start
+
+The simplest way to use the library is to call the `protect` function, which masks PII with placeholders.
+
 ```python
-from ai4privacy import mask
-text = "Email me at developers@ai4privacy.com"
-print(mask(text))  
+from ai4privacy import protect
+
+text = "Email me at developers@ai4privacy.com or call me at +41763223001."
+masked_text = protect(text)
+
+print(masked_text)
+# Expected Output: Email me at [PII_1] or call me at [PII_2]
 ```
-Developed by Michael Anthony. All rights reserved.
+
+-----
+
+## Advanced Usage
+
+### Using Different Models
+
+You can easily switch between models using the `multilingual` and `classify_pii` flags.
+
+```python
+from ai4privacy import protect
+
+text = "Je m'appelle Pierre et j'habite à Paris."
+
+# Use the multilingual model for non-English text
+masked_multilingual = protect(text, multilingual=True)
+print(f"Multilingual: {masked_multilingual}")
+# Expected Output: Multilingual: Je m'appelle [PII_1] et j'habite à [PII_2]
+
+# Use the categorical model to see the PII types
+details = protect(text, classify_pii=True, verbose=True)
+print(f"Categorical Labels: {[r['label'] for r in details['replacements']]}")
+# Expected Output: Categorical Labels: ['GIVENNAME', 'CITY']
+```
+
+### Observe Mode
+
+To analyze text without changing it, use `observe()`. It returns a dictionary containing statistics and the **privacy\_mask**—a detailed list of all PII entities found.
+
+```python
+from ai4privacy import observe
+import json
+
+text = "My name is Alice and I live in Berlin."
+report = observe(text, classify_pii=True)
+
+print(json.dumps(report, indent=2))
+```
+
+```json
+{
+  "num_texts_processed": 1,
+  "num_texts_with_pii": 1,
+  "pii_entity_counts": {
+    "GIVENNAME": 1,
+    "CITY": 1
+  },
+  "total_pii_entities_found": 2,
+  "privacy_mask": [
+    {
+      "label": "GIVENNAME",
+      "start": 11,
+      "end": 16,
+      "activation": 0.98,
+      "value": "Alice"
+    },
+    {
+      "label": "CITY",
+      "start": 30,
+      "end": 36,
+      "activation": 0.99,
+      "value": "Berlin"
+    }
+  ]
+}
+```
+
+### Verbose and Developer Modes
+
+Set `verbose=True` to get a dictionary containing the original text, masked text, and replacement details. For deep debugging, `developer_verbose=True` adds a token-by-token breakdown of the model's predictions.
+
+```python
+from ai4privacy import protect
+
+text = "Senden Sie es an Eva Schmidt."
+details = protect(text, classify_pii=True, verbose=True)
+
+print(details['replacements'])
+# Expected Output: [{'label': 'GIVENNAME', 'start': 18, 'end': 22, ...}, {'label': 'SURNAME', 'start': 23, 'end': 30, ...}]
+```
+
+### Adjusting Sensitivity
+
+The `score_threshold` (default: `0.01`) controls how confident the model must be to flag a token as PII.
+
+  - A **lower** value increases sensitivity (finds more PII, but may have more false positives).
+  - A **higher** value increases precision (detections are more likely correct, but may miss some PII).
+
+<!-- end list -->
+
+```python
+from ai4privacy import protect
+
+text = "Maybe this is a name, maybe not. Contact John."
+
+# High precision (less likely to flag "Maybe")
+masked_high_prec = protect(text, score_threshold=0.5) 
+print(f"High Precision: {masked_high_prec}")
+# Expected Output: High Precision: Maybe this is a name, maybe not. Contact [PII_1]
+
+# High sensitivity (more likely to flag "Maybe" if the model is unsure)
+masked_high_sens = protect(text, score_threshold=0.001)
+print(f"High Sensitivity: {masked_high_sens}")
+```
+
+-----
+
+## Disclaimer 📢
+
+Ai4Privacy is trained on the world's largest open-source privacy dataset. For production use, please evaluate results carefully on your own datasets. For assistance, contact us at our website https://ai4privacy.com or email support@ai4privacy.com.
