@@ -6,7 +6,7 @@ from .observe.observe import observe
 from .protect.protect import protect, batch_protect
 from .reidentify.reidentify import reidentify, batch_reidentify
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 __all__ = [
     "observe",
