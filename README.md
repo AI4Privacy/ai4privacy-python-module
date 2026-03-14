@@ -60,7 +60,7 @@ The simplest way to use the library is to call `protect()`, which masks PII with
 ```python
 from ai4privacy import protect
 
-text = "Email me at developers@ai4privacy.com or call me at +41763223001."
+text = "Email me at developers@ai4privacy.com or call me at +41794567890."
 masked_text = protect(text)
 
 print(masked_text)
@@ -166,7 +166,7 @@ from ai4privacy import batch_protect, batch_reidentify
 
 texts = [
     "Email: alice@example.com",
-    "Call me at +41763223001",
+    "Call me at +41794567890",
     "My name is Pierre Dupont"
 ]
 
