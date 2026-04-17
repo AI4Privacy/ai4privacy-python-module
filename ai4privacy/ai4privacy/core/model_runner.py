@@ -14,7 +14,15 @@ MODEL_ENGLISH = "ai4privacy/llama-ai4privacy-english-anonymiser-openpii"
 MODEL_MULTILINGUAL = "ai4privacy/llama-ai4privacy-multilingual-anonymiser-openpii"
 MODEL_CATEGORICAL = "ai4privacy/llama-ai4privacy-multilingual-categorical-anonymiser-openpii"
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def _pick_device():
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+
+device = _pick_device()
 
 # --- Caching and Disclaimer ---
 _model_cache = {}

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ai4privacy",
-    version="0.5.0",
+    version="0.5.1",
     author="Michael Anthony",
     author_email="developers@ai4privacy.com",
     description="A package to mask PII in text using transformers",
